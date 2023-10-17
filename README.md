@@ -4,7 +4,7 @@ Chess bot developed by University of São Paulo DATA Extension Group. You can ch
 This bot is a continuation of the work developed for the [Tiny Chess Bot Challenge](https://github.com/icmc-data/tiny-chess-bots).
 
 ## Code 
-Just worry about the (strategies.py)[strategies.py] file.
+Just worry about the [strategies.py](strategies.py) file.
 
 ## Authors
 - [@vitorfrois](https://www.github.com/vitorfrois)
