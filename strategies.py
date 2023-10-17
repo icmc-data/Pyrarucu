@@ -11,6 +11,7 @@ import random
 from engine_wrapper import MinimalEngine
 from typing import Any, Union
 import logging
+INFINITY = 1e9
 MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
 
 
@@ -22,12 +23,77 @@ logger = logging.getLogger(__name__)
 
 class ExampleEngine(MinimalEngine):
     """An example engine that all homemade engines inherit."""
-
     pass
 
 
-# Strategy names and ideas from tom7's excellent eloWorld video
+class MyBot(ExampleEngine):
+    # rnbqkp RNBQKP
+    piece_values = {
+        'R': 50, 'N': 30, 'B': 30, 'Q': 100, 'K': 1000, 'P': 10, # White
+        'r': -50, 'n': -30, 'b': -30, 'q': -100, 'k': -1000, 'p': -10 # Black
+    }
 
+    def search(self, board: chess.Board, *args: Any) -> PlayResult:
+        move = self.alpha_beta_pruning(board, 3, -INFINITY, INFINITY)
+        return PlayResult(move, None)
+
+    def simple_evaluation(self, board: chess.Board) -> float:
+        evaluation = 0
+        board_fen: str = board.shredder_fen()
+        for char in board_fen:
+            try:
+                char_value = self.piece_values[char]
+            except KeyError:
+                char_value = 0
+            evaluation += char_value
+        return evaluation
+
+    def alpha_beta_pruning(board: chess.Board, depth: int, alpha: double, beta: double) -> Tuple[chess.Move, int]:
+        if depth == 0 or board.is_checkmate():
+            return last_move, self.simple_board_evaluation(board)
+
+        all_moves = list(board.generate_legal_moves())
+        value = -self.infinity if board.turn else self.infinity
+        best_move = last_move
+
+        if board.turn:
+            for move in all_moves:
+                board.push(move)
+                child_move, child_evaluation = self.alpha_beta_pruning(board, depth - 1, alpha, beta, move)
+                board.pop()
+                
+                if child_evaluation > value:
+                    best_move = move
+                    value = child_evaluation
+
+                # Beta cutoff
+                if value > beta:
+                    break
+
+                alpha = max(value, alpha)
+        else:
+            for move in all_moves:
+                board.push(move)
+                child_move, child_evaluation = self.alpha_beta_pruning(board, depth - 1, alpha, beta, move)
+                board.pop()
+
+                if child_evaluation < value:
+                    best_move = move
+                    value = child_evaluation
+
+                # Alpha cutoff
+                if value < alpha:
+                    break
+
+                beta = min(value, beta)
+
+        return best_move, value
+
+
+
+
+# Example of Simple Bot
+# Inherit ExampleEngine and implement search() function
 class RandomMove(ExampleEngine):
     """Get a random move."""
 
