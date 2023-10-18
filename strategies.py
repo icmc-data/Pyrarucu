@@ -20,6 +20,7 @@ MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
 # logger.debug("message") will only print "message" if verbose logging is enabled.
 logger = logging.getLogger(__name__)
 
+engine_name = 'MyBot'
 
 class ExampleEngine(MinimalEngine):
     """An example engine that all homemade engines inherit."""
@@ -34,7 +35,7 @@ class MyBot(ExampleEngine):
     }
 
     def search(self, board: chess.Board, *args: Any) -> PlayResult:
-        move = self.alpha_beta_pruning(board, 3, -INFINITY, INFINITY)
+        move, evaluation = self.alpha_beta_pruning(board, 3, -INFINITY, INFINITY, chess.Move.null())
         return PlayResult(move, None)
 
     def simple_evaluation(self, board: chess.Board) -> float:
@@ -48,12 +49,12 @@ class MyBot(ExampleEngine):
             evaluation += char_value
         return evaluation
 
-    def alpha_beta_pruning(board: chess.Board, depth: int, alpha: double, beta: double) -> Tuple[chess.Move, int]:
+    def alpha_beta_pruning(self, board: chess.Board, depth: int, alpha: double, beta: double, last_move: chess.Move) -> Tuple[chess.Move, int]:
         if depth == 0 or board.is_checkmate():
-            return last_move, self.simple_board_evaluation(board)
+            return last_move, self.simple_evaluation(board)
 
         all_moves = list(board.generate_legal_moves())
-        value = -self.infinity if board.turn else self.infinity
+        value = -INFINITY if board.turn else INFINITY
         best_move = last_move
 
         if board.turn:
@@ -88,9 +89,6 @@ class MyBot(ExampleEngine):
                 beta = min(value, beta)
 
         return best_move, value
-
-
-
 
 # Example of Simple Bot
 # Inherit ExampleEngine and implement search() function
