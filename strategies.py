@@ -1,9 +1,3 @@
-"""
-Some example strategies for people who want to create a custom, homemade bot.
-
-With these classes, bot makers will not have to implement the UCI or XBoard interfaces themselves.
-"""
-
 from __future__ import annotations
 import chess
 from chess.engine import PlayResult
@@ -12,15 +6,9 @@ from engine_wrapper import MinimalEngine
 from typing import Any, Union
 import logging
 INFINITY = 1e9
-MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
-
-
-# Use this logger variable to print messages to the console or log files.
-# logger.info("message") will always print "message" to the console or log file.
-# logger.debug("message") will only print "message" if verbose logging is enabled.
-logger = logging.getLogger(__name__)
-
 engine_name = 'MyBot'
+MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
+logger = logging.getLogger(__name__)
 
 class ExampleEngine(MinimalEngine):
     """An example engine that all homemade engines inherit."""
@@ -101,6 +89,10 @@ class MyBot(ExampleEngine):
 
         return best_move, value
 
+
+## -------------------------------------------------------------------------- ##
+## -------------------- EXAMPLES ---------------------------------------------##
+
 # Example of Simple Bot
 # Inherit ExampleEngine and implement search() function
 class RandomMove(ExampleEngine):
@@ -109,26 +101,6 @@ class RandomMove(ExampleEngine):
     def search(self, board: chess.Board, *args: Any) -> PlayResult:
         """Choose a random move."""
         return PlayResult(random.choice(list(board.legal_moves)), None)
-
-
-class Alphabetical(ExampleEngine):
-    """Get the first move when sorted by san representation."""
-
-    def search(self, board: chess.Board, *args: Any) -> PlayResult:
-        """Choose the first move alphabetically."""
-        moves = list(board.legal_moves)
-        moves.sort(key=board.san)
-        return PlayResult(moves[0], None)
-
-
-class FirstMove(ExampleEngine):
-    """Get the first move when sorted by uci representation."""
-
-    def search(self, board: chess.Board, *args: Any) -> PlayResult:
-        """Choose the first move alphabetically in uci representation."""
-        moves = list(board.legal_moves)
-        moves.sort(key=str)
-        return PlayResult(moves[0], None)
 
 
 class ComboEngine(ExampleEngine):
