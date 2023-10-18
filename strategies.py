@@ -39,14 +39,25 @@ class MyBot(ExampleEngine):
         return PlayResult(move, None)
 
     def simple_evaluation(self, board: chess.Board) -> float:
-        evaluation = 0
-        board_fen: str = board.shredder_fen()
+        # Heuristics against checkmate
+        if board.is_checkmate():
+            if board.turn == chess.WHITE:
+                return -1000
+            else:
+                return 1000
+
+        # Simple Evaluation Function
+        sum_pieces_values = 0
+        board_fen: str = board.board_fen()
         for char in board_fen:
             try:
                 char_value = self.piece_values[char]
             except KeyError:
                 char_value = 0
-            evaluation += char_value
+            sum_pieces_values += char_value
+
+        number_legal_moves = len(list(board.legal_moves))
+        evaluation = number_legal_moves * .1 + sum_pieces_values
         return evaluation
 
     def alpha_beta_pruning(self, board: chess.Board, depth: int, alpha: double, beta: double, last_move: chess.Move) -> Tuple[chess.Move, int]:
