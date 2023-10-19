@@ -3,7 +3,7 @@
 ![image](pyrarucu.png)
 
 Chess bot developed by University of São Paulo DATA Extension Group. 
-You still cannot challenge the bot at [Lichess](https://lichess.org/nolinkyet).
+You still cannot challenge the bot at [Lichess](https://lichess.org/@/Pyrarucu).
 
 This bot is a continuation of the work developed for the [Tiny Chess Bot Challenge](https://github.com/icmc-data/tiny-chess-bots).
 
