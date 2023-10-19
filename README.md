@@ -1,5 +1,7 @@
 # Pyrarucu
 
+![image](pyrarucu.png)
+
 Chess bot developed by University of São Paulo DATA Extension Group. 
 You still cannot challenge the bot at [Lichess](https://lichess.org/nolinkyet).
 
