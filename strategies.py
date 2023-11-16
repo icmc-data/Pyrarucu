@@ -5,10 +5,56 @@ import random
 from engine_wrapper import MinimalEngine
 from typing import Any, Union
 import logging
+import pickle
+import numpy as np
+from sklearn.neural_network import MLPRegressor
+
+
 INFINITY = 1e9
+search_depth = 3
 engine_name = 'MyBot'
 MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
 logger = logging.getLogger(__name__)
+
+model_filename = 'engines/model.pkl'
+
+model = pickle.load(open(model_filename, 'rb'))
+
+class BitboardHelper:
+    @staticmethod
+    def bitboards_to_array(bb: np.ndarray) -> np.ndarray:
+        bb = np.asarray(bb, dtype=np.uint64)[:, np.newaxis]
+        s = 8 * np.arange(7, -1, -1, dtype=np.uint64)
+        b = (bb >> s).astype(np.uint8)
+        b = np.unpackbits(b, bitorder="little")
+        return list(b)
+    
+    @staticmethod
+    def fen_to_bit_array(fen):
+        board = chess.Board(fen=fen)
+
+        black, white = board.occupied_co
+
+        bitboards = np.array([
+            black & board.pawns,
+            black & board.knights,
+            black & board.bishops,
+            black & board.rooks,
+            black & board.queens,
+            black & board.kings,
+            white & board.pawns,
+            white & board.knights,
+            white & board.bishops,
+            white & board.rooks,
+            white & board.queens,
+            white & board.kings,
+            board.turn,
+            board.has_castling_rights(white),
+            board.has_castling_rights(black)
+        ], dtype=np.uint64)
+
+        return BitboardHelper.bitboards_to_array(bitboards)
+
 
 class ExampleEngine(MinimalEngine):
     """An example engine that all homemade engines inherit."""
@@ -23,7 +69,7 @@ class MyBot(ExampleEngine):
     }
 
     def search(self, board: chess.Board, *args: Any) -> PlayResult:
-        move, evaluation = self.alpha_beta_pruning(board, 3, -INFINITY, INFINITY, chess.Move.null())
+        move, evaluation = self.alpha_beta_pruning(board, search_depth, -INFINITY, INFINITY, chess.Move.null())
         return PlayResult(move, None)
 
     def simple_evaluation(self, board: chess.Board) -> float:
@@ -48,9 +94,18 @@ class MyBot(ExampleEngine):
         evaluation = number_legal_moves * .1 + sum_pieces_values
         return evaluation
 
-    def alpha_beta_pruning(self, board: chess.Board, depth: int, alpha: double, beta: double, last_move: chess.Move) -> Tuple[chess.Move, int]:
+    def nn_evaluation(self, board: chess.Board) -> float:
+        bitboard = BitboardHelper.fen_to_bit_array(board.board_fen())
+        evaluation = model.predict([bitboard])
+        return evaluation[0]
+
+    def alpha_beta_pruning(
+        self, board: chess.Board, 
+        depth: int, alpha: double, 
+        beta: double, last_move: chess.Move) -> Tuple[chess.Move, int]:
+        
         if depth == 0 or board.is_checkmate():
-            return last_move, self.simple_evaluation(board)
+            return last_move, self.nn_evaluation(board)
 
         all_moves = list(board.generate_legal_moves())
         value = -INFINITY if board.turn else INFINITY
