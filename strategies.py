@@ -8,10 +8,11 @@ import logging
 import pickle
 import numpy as np
 from sklearn.neural_network import MLPRegressor
+from sklearn.ensemble import HistGradientBoostingRegressor
 
 
 INFINITY = 1e9
-search_depth = 3
+SEARCH_DEPTH = 3
 engine_name = 'MyBot'
 MOVE = Union[chess.engine.PlayResult, list[chess.Move]]
 logger = logging.getLogger(__name__)
@@ -69,12 +70,22 @@ class MyBot(ExampleEngine):
     }
 
     def search(self, board: chess.Board, *args: Any) -> PlayResult:
-        move, evaluation = self.alpha_beta_pruning(board, search_depth, -INFINITY, INFINITY, chess.Move.null())
+        move, evaluation = self.alpha_beta_pruning(board, SEARCH_DEPTH, -INFINITY, INFINITY, chess.Move.null())
         return PlayResult(move, None)
+
+    def eval_move(self, board, move):
+        board.push(move)
+        evaluation = self.simple_evaluation(board)
+        board.push(chess.Move.null())
+        board.pop()
+        board.pop()
+
+        print(move, evaluation)
+        return evaluation
 
     def simple_evaluation(self, board: chess.Board) -> float:
         # Heuristics against checkmate
-        if board.is_checkmate():
+        if board.is_checkmate() or board.is_check():
             if board.turn == chess.WHITE:
                 return -1000
             else:
@@ -90,31 +101,42 @@ class MyBot(ExampleEngine):
                 char_value = 0
             sum_pieces_values += char_value
 
-        number_legal_moves = len(list(board.legal_moves))
-        evaluation = number_legal_moves * .1 + sum_pieces_values
+        number_legal_moves = board.legal_moves.count()
+        evaluation = number_legal_moves * 0.5 + sum_pieces_values
         return evaluation
 
-    def nn_evaluation(self, board: chess.Board) -> float:
+    def ml_evaluation(self, board: chess.Board) -> float:
         bitboard = BitboardHelper.fen_to_bit_array(board.board_fen())
-        evaluation = model.predict([bitboard])
-        return evaluation[0]
+        evaluation = model.predict([bitboard])[0]
+        return evaluation
 
     def alpha_beta_pruning(
         self, board: chess.Board, 
         depth: int, alpha: double, 
         beta: double, last_move: chess.Move) -> Tuple[chess.Move, int]:
         
-        if depth == 0 or board.is_checkmate():
-            return last_move, self.nn_evaluation(board)
+        if depth <= 0 or board.is_checkmate():
+            return last_move, self.ml_evaluation(board)
 
         all_moves = list(board.generate_legal_moves())
         value = -INFINITY if board.turn else INFINITY
-        best_move = last_move
 
+        # Sort moves when max depth
+        if depth == SEARCH_DEPTH:
+            all_moves = sorted(all_moves, key=lambda move: self.eval_move(board, move), reverse=board.turn)
+
+        best_move = last_move
+        
+        # Get only top moves
+        n_moves_to_analyze = int((depth / SEARCH_DEPTH) * len(all_moves)) + 1
+        best_moves = all_moves[:n_moves_to_analyze]
+
+        depth = depth - 1
         if board.turn:
-            for move in all_moves:
+            for i in range(len(best_moves)):                    
+                move = best_moves[i]
                 board.push(move)
-                child_move, child_evaluation = self.alpha_beta_pruning(board, depth - 1, alpha, beta, move)
+                child_move, child_evaluation = self.alpha_beta_pruning(board, depth, alpha, beta, move)
                 board.pop()
                 
                 if child_evaluation > value:
@@ -129,7 +151,7 @@ class MyBot(ExampleEngine):
         else:
             for move in all_moves:
                 board.push(move)
-                child_move, child_evaluation = self.alpha_beta_pruning(board, depth - 1, alpha, beta, move)
+                child_move, child_evaluation = self.alpha_beta_pruning(board, depth, alpha, beta, move)
                 board.pop()
 
                 if child_evaluation < value:
