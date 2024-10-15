@@ -6,13 +6,9 @@ Pyrarucu é um bot de Xadrez desenvolvido pelo grupo de extensão em Ciência de
 
 Visamos, com esse projeto, aplicar técnicas de Inteligência Artifical em conjunto com o Aprendizado de Máquina priorizando a legibilidade e inteligibilidade.
 
-Você pode desafiar o bot para uma partida no [Lichess](https://lichess.org/@/Pyrarucu).
 Esse projeto é uma continuação do [Tiny Chess Bot Challenge](https://github.com/icmc-data/tiny-chess-bots).
 
 Sinta-se livre para abrir uma nova Issue (novas funcionalidades e melhorias para o Bot) e fazer seu Pull Request com adições ao projeto quando possível. Caso seja membro do DATA e queira contribuir, converse com um coordenador para ser adicionado como contribuidor.
-
-## Forkando o repositório
-Para contribuir com o projeto, você pode seguir o guia disponível em [Contributing to a project](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project).
 
 ## Instalação
 Clone o repositório e rode a seguinte lista de comandos
@@ -31,13 +27,9 @@ python play.py
 Assim, é possível ter uma noção do tempo de jogo e força do Pyrarucu.
 É possível sair do jogo com `Ctrl+D`
 
-## Notebooks
-Notebooks jupyter são ótimas ferramentas para auxiliar no desenvolvimento de um modelo. Assim, o desenvolvimento e treinamento estão em [notebooks/01_training.ipynb](notebooks/01_training.ipynb). Não hesite em realizar contribuições e testes por lá.
-
 ## O cérebro do Pyrarucu
-A parte do processamento está no arquivo [strategies.py](strategies.py), mais especificamente na classe `MyBot()`.
+A parte do processamento está no arquivo [strategies.py](strategies.py), mais especificamente na classe `Pyrarucu()`.
 Todas as mudanças exceto quanto a notebooks devem ser nesse arquivo.
-
 
 ### Features
 - Função de Pesquisa com Alpha Beta Pruning `alpha_beta_pruning()`
