@@ -20,7 +20,7 @@ pip install -r requirements
 Isso irá criar um ambiente virtual em Python, permitindo o desenvolvimento do bot.
 
 ## Jogando localmente
-Para jogar localmente contra o bot, use 
+Para jogar localmente contra o bot, use:
 ``` 
 python play.py
 ```
