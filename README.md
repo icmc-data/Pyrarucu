@@ -38,4 +38,3 @@ Mais informações sobre o funcionamento do bot podem ser encontradas em [Pyraru
 [Chess Programming Wiki](https://www.chessprogramming.org/Main_Page)
 [Stanford CS221](https://stanford.edu/~cpiech/cs221/apps/deepBlue.html)
 [Coding Adventure: Making a Better Chess Bot](https://www.youtube.com/watch?v=_vqlIPDR2TU)
-Teste
