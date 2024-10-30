@@ -1,6 +1,7 @@
 import chess
 import chess.engine
 from strategies import RandomMove
+from gui import ChessGUI
 
 def print_styled(board: chess.Board) -> None:
     print("Black")
@@ -39,7 +40,8 @@ def play_against_engine(engine: chess.engine):
 
 def main():
     engine = RandomMove()
-    play_against_engine(engine)
+    gui = ChessGUI()
+    gui.play_engine(engine)
 
 if __name__ == '__main__':
     main()
