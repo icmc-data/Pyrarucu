@@ -1,6 +1,8 @@
 import chess
 import chess.engine
-from strategies import RandomMove
+
+from strategies import Pyrarucu, RandomMove
+
 
 def print_styled(board: chess.Board) -> None:
     print("Black")
@@ -15,30 +17,33 @@ def play_against_engine(engine: chess.engine):
     print_styled(board)
 
     while not board.is_game_over():
-        result = engine.search(board)
-        board.push(result.move)
-        print_styled(board)
+        move, move_val = engine.search(board)
+        board.push(move)
+        print(f"Move valuation: {move_val}")
 
-        valid_move = False
-
-        while not valid_move:
-            human_move = input('Insert move in UCI format (a2a4): ')
-            move = chess.Move.from_uci(human_move)
-            list_valid_moves = board.generate_legal_moves()
-            if move in list_valid_moves:
-                board.push(move)
-                valid_move = True
-            else:
-                print("Not a valid move!")
-        
         print_styled(board)
+        #
+        # valid_move = False
+        #
+        # while not valid_move:
+        #     human_move = input('Insert move in UCI format (a2a4): ')
+        #     move = chess.Move.from_uci(human_move)
+        #     list_valid_moves = board.generate_legal_moves()
+        #     if move in list_valid_moves:
+        #         board.push(move)
+        #         valid_move = True
+        #     else:
+        #         print("Not a valid move!")
+        # 
+        # print_styled(board)
 
     print('Game finished!')
+    print(board.outcome())
     print(board.outcome().result())
 
 
 def main():
-    engine = RandomMove()
+    engine = Pyrarucu()
     play_against_engine(engine)
 
 if __name__ == '__main__':
