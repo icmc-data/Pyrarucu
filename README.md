@@ -2,9 +2,6 @@
 
 ![image](resources/pyrarucu.png)
 
-lorem ipsum 
-
-
 Pyrarucu é um bot de Xadrez desenvolvido pelo grupo de extensão em Ciência de Dados da USP São Carlos, DATA. É desenvolvido em Python, pela facilidade de integração com a interface do lichess-bot e de compreensão.
 
 Visamos, com esse projeto, aplicar técnicas de Inteligência Artifical em conjunto com o Aprendizado de Máquina priorizando a legibilidade e inteligibilidade.
