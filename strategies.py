@@ -15,10 +15,8 @@ class RandomMove:
 
 class Pyrarucu:
 
-    def evaluate(self, board: chess.Board, *args: Any) -> float:
-        val = 0
-
-        piece_values  = {
+    def __init__(self) -> None:
+        self.piece_values  = {
             'P': 1,
             'N': 3,
             'B': 3,
@@ -33,6 +31,10 @@ class Pyrarucu:
             'k': -1,
         }
 
+    def evaluate(self, board: chess.Board, *args: Any) -> float:
+        val = 0
+
+
         if board.is_game_over():
             if board.is_checkmate():
                 if board.outcome().winner == True:
@@ -45,7 +47,7 @@ class Pyrarucu:
         for square in chess.SQUARES:
             piece = board.piece_at(square)
             if piece is not None:
-                val += piece_values[chess.Piece.symbol(piece)]
+                val += self.piece_values[chess.Piece.symbol(piece)]
 
         center_squares = [chess.D4, chess.D5, chess.E4, chess.E5]
 
@@ -60,7 +62,7 @@ class Pyrarucu:
         return val
    
 
-    def search(self, board: chess.Board, depth=0, alpha = -float('inf'), beta=float('inf'), *args: Any):
+    def search(self, board: chess.Board, depth:int=0, alpha:float = -float('inf'), beta:float=float('inf'), *args: Any):
         if depth > 4:
             return None, self.evaluate(board)
 
