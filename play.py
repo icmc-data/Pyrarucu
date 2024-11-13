@@ -22,20 +22,6 @@ def play_against_engine(engine: chess.engine):
         print(f"Move valuation: {move_val}")
 
         print_styled(board)
-        #
-        # valid_move = False
-        #
-        # while not valid_move:
-        #     human_move = input('Insert move in UCI format (a2a4): ')
-        #     move = chess.Move.from_uci(human_move)
-        #     list_valid_moves = board.generate_legal_moves()
-        #     if move in list_valid_moves:
-        #         board.push(move)
-        #         valid_move = True
-        #     else:
-        #         print("Not a valid move!")
-        # 
-        # print_styled(board)
 
     print('Game finished!')
     print(board.outcome())
