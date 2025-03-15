@@ -22,6 +22,8 @@ PLAYER_BOT = 'p-bot'
 BOT_BOT = 'bot-bot'
 
 SYMBOLS = ['K', 'Q', 'R', 'B', 'N', 'P', 'k', 'q', 'r', 'b', 'n', 'p']
+whitePromotionOptions = ['Q', 'R', 'B', 'N']
+blackPromotionOptions = ['q', 'r', 'b', 'n']
 
 class ChessGUI:
     def __init__(self, screen: pygame.display):
@@ -53,7 +55,7 @@ class ChessGUI:
         elif mode == BOT_BOT:
             self.botVSbot()
 
-    def draw_board(self):
+    def draw_board(self) -> None:
         colors = [WHITE, GRAY]
         for row in range(8):
             for col in range(8):
@@ -70,7 +72,7 @@ class ChessGUI:
                     )
                 )
 
-    def draw_pieces(self, board: chess.Board):
+    def draw_pieces(self, board: chess.Board) -> None:
         for square in chess.SQUARES:
             piece = board.piece_at(square)
             if piece:
@@ -88,7 +90,7 @@ class ChessGUI:
                     )
                 )
 
-    def mode_selection_screen(self):
+    def mode_selection_screen(self) -> None:
         pygame.draw.rect(self.screen, GRAY, (200, 100, 240, 50))
         pygame.draw.rect(self.screen, GRAY, (200, 160, 240, 50))
 
@@ -100,7 +102,7 @@ class ChessGUI:
         # Atualiza a tela
         pygame.display.flip()
     
-    def promotion_event(self):
+    def promotion_event(self) -> None:
         pygame.draw.rect(
             screen, 
             (255, 255, 60), 
@@ -112,13 +114,10 @@ class ChessGUI:
             )
         )
 
-        optionsWhite = ['Q', 'R', 'B', 'N']
-        optionsBlack = ['q', 'r', 'b', 'n']
-
         if self.board.turn == chess.WHITE:
-            final = optionsWhite
+            final = whitePromotionOptions
         else:
-            final = optionsBlack
+            final = blackPromotionOptions
 
         # Insere na tela as peças de promoção corretas
         for i, piece in enumerate(final):
@@ -149,7 +148,7 @@ class ChessGUI:
 
 
     # Define o controle das ações e movimentos ao clicar com o mouse
-    def handle_mouse_click(self, pos):
+    def handle_mouse_click(self, pos: tuple):
         row = pos[1] // squareSize
         col = pos[0] // squareSize
         clicked_square = chess.square(col, 7 - row)
@@ -204,7 +203,7 @@ class ChessGUI:
             self.selected_square = None
         self.draw_pieces(self.board)
 
-    def verify_check(self):
+    def verify_check(self) -> None:
         if self.board.is_check():
             # Obter a posição do rei que está em xeque
             if self.board.turn:
@@ -245,7 +244,7 @@ class ChessGUI:
             return True
         return False
 
-    def playerVSbot(self, engine = Pyrarucu()):
+    def playerVSbot(self, engine = Pyrarucu()) -> None:
         running = True
 
         self.draw_board()
@@ -272,7 +271,7 @@ class ChessGUI:
             # Verificar xeque-mate ou empate
             running = not self.has_ended()
 
-    def botVSbot(self, engine1 = Pyrarucu(), engine2 = Pyrarucu()):
+    def botVSbot(self, engine1 = Pyrarucu(), engine2 = Pyrarucu()) -> None:
         running = True
 
         self.draw_board()
