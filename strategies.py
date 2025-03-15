@@ -31,9 +31,12 @@ class Pyrarucu:
             'k': -1,
         }
 
-    def evaluate(self, board: chess.Board, *args: Any) -> float:
-        val = 0
+    def evaluate(
+        self, board: chess.Board, 
+        *args: Any
+    ) -> float:
 
+        val = 0
 
         if board.is_game_over():
             if board.is_checkmate():
@@ -55,15 +58,22 @@ class Pyrarucu:
             piece = board.piece_at(square)
             if piece is not None:
                 if piece.color == chess.WHITE:
-                    val += 20
+                    val += 1
                 else:
-                    val -= 20
+                    val -= 1
         
         return val
    
 
-    def search(self, board: chess.Board, depth:int=0, alpha:float = -float('inf'), beta:float=float('inf'), *args: Any):
-        if depth > 4:
+    def tree_search(
+        self, 
+        board: chess.Board, 
+        depth:int=0, 
+        alpha:float = -float('inf'), 
+        beta:float = float('inf'), 
+        *args: Any
+    ):
+        if depth > 2:
             return None, self.evaluate(board)
 
         else:
@@ -75,9 +85,8 @@ class Pyrarucu:
                 
                 for move in board.legal_moves:
                     board.push(move)
-                    _, move_val = self.search(board, depth + 1, alpha, beta)
+                    _, move_val = self.tree_search(board, depth + 1, alpha, beta)
                     board.pop()
-
 
                     if(move_val > best_val):
                         best_move = move
@@ -93,7 +102,7 @@ class Pyrarucu:
                 
                 for move in board.legal_moves:
                     board.push(move)
-                    _, move_val = self.search(board, depth + 1, alpha, beta)
+                    _, move_val = self.tree_search(board, depth + 1, alpha, beta)
                     board.pop()
 
                     if(move_val < best_val):
@@ -104,7 +113,11 @@ class Pyrarucu:
                     if beta <= alpha:
                         break
 
-                
         return best_move, best_val
+
+    def search(self, board: chess.Board) -> PlayResult:
+        best_move, best_val = self.tree_search(board)
+        return PlayResult(best_move, None)
+
 
 
