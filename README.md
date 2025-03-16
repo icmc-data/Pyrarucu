@@ -33,6 +33,9 @@ Mais informações sobre o funcionamento do bot podem ser encontradas em [Pyraru
 ## Authors
 - [@vitorfrois](https://www.github.com/vitorfrois)
 - [@MurilloMMartins](https://www.github.com/MurilloMMartins)
+- [@Petroncini](https://github.com/Petroncini)
+- [@ArthurTRamos](https://github.com/ArthurTRamos)
+- [@matheu-becd](https://github.com/matheu-becd)
 
 ## Referências
 [Chess Programming Wiki](https://www.chessprogramming.org/Main_Page)
